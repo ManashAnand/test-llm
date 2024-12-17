@@ -95,7 +95,7 @@ Default Previous Report Structure:
     {context_data['financial_metrics']}
     """
     
-    test_instruction = '''Write a 5000-word comprehensive analysis of Company X's annual financial performance and market position, focusing on key financial metrics, strategic initiatives, and future outlook.
+    test_instruction = '''Write a 10-word comprehensive analysis of Company X's annual financial performance and market position, focusing on key financial metrics, strategic initiatives, and future outlook.
 
 Cover the following key areas:
 1. **Financial Overview:** Analyze key financial statements (Income Statement, Balance Sheet, Cash Flow Statement), including year-over-year comparisons, key ratios, and significant trends in revenue, profitability, and cash flow management.

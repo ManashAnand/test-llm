@@ -22,10 +22,12 @@ write_chain = write_prompt | LLM | StrOutputParser()
 
 if __name__ == "__main__":
     # Test the write_chain
-    test_instruction = "Write a 1500-word essay about the impact of artificial intelligence on modern society, covering its benefits, potential risks, and ethical considerations."
-    test_plan = "Paragraph 1 - Main Point: Introduction to AI and its growing influence - Word Count: 200 words"
-    test_text = "Artificial Intelligence (AI) has become an integral part of our modern society, revolutionizing various aspects of our daily lives and industries."
-    
+    test_instruction = """Write a detailed financial analysis report for [Company Name]'s Q4 2023 performance, focusing on key financial metrics, business highlights, and future outlook. The report should be comprehensive, data-driven, and include relevant industry comparisons."""
+
+    test_plan = "Section 1 - Main Point: Executive Summary and Key Financial Highlights - Word Count: 250 words"
+
+    test_text = "In Q4 2023, [Company Name] demonstrated robust financial performance, marked by significant revenue growth and improved operational efficiency across key business segments."
+  
     # Invoke the write_chain
     result = write_chain.invoke({
         "intructions": test_instruction,

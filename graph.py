@@ -6,6 +6,7 @@ from typing import List
 from nodes.planning_node import planning_node
 from nodes.writing_node import writing_node
 from nodes.saving_node import saving_node
+from nodes.perplexity_node import perplexity_node
 
 
 class GraphState(TypedDict):
@@ -36,13 +37,16 @@ def create_workflow(llm):
     workflow.add_node("planning_node", planning_node)
     workflow.add_node("writing_node", writing_node)
     workflow.add_node("saving_node", saving_node)
+    workflow.add_node("perplexity_node", perplexity_node)
 
     # Set entry point
     workflow.set_entry_point("planning_node")
 
     # Add edges
+    # workflow.add_edge("planning_node", "perplexity_node")
     workflow.add_edge("planning_node", "writing_node")
     workflow.add_edge("writing_node", "saving_node")
-    workflow.add_edge("saving_node", END)
+    workflow.add_edge("saving_node", "perplexity_node")
+    workflow.add_edge("perplexity_node", END)
 
     return workflow.compile()

@@ -13,4 +13,8 @@ def planning_node(state):
     plan = plan_chain.invoke({"intructions": initial_prompt})
     # print(plan)
 
-    return {"plan": plan, "num_steps":num_steps}
+    return {
+        "plan": plan, 
+        "initial_prompt": initial_prompt,  
+        "num_steps": num_steps
+    }

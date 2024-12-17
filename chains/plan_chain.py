@@ -39,7 +39,7 @@ plan_chain = plan_prompt | LLM | StrOutputParser()
 ## For testing
 if __name__ == "__main__":
     # Test the plan_chain
-    test_instruction = "Write a current and up to date 100% unique guide for my intermittent fasting for women over 50 cookbook on \u201cSnacks\u201d with humanlike style, using transitional phrases, and avoidance of unnatural sentence structure while explaining in details extensively and comprehensively."
+    test_instruction = "Create a comprehensive financial analysis report for Q4 2023, focusing on market trends, key performance indicators, and investment opportunities. Include detailed analysis of market volatility, sector performance, and provide strategic recommendations with supporting data and rationale."
     
     # Invoke the plan_chain
     result = plan_chain.invoke({"intructions": test_instruction})
