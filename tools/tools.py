@@ -3,7 +3,12 @@ import requests
 import json
 import os
 import re
+import base64
+import logging, json
+import aiofiles
 
+from clients.openai.client import async_openai_client as async_client
+from clients.openai.client import openai_client as client
 
 
 def write_markdown_file(content, filename):
@@ -16,9 +21,122 @@ def write_markdown_file(content, filename):
   with open(f"{filename}.md", "w") as f:
     f.write(content)
     
+async def encode_image_async(image_path: str) -> str:
+    async with aiofiles.open(image_path, "rb") as image_file:
+        image_data = await image_file.read()
+        return base64.b64encode(image_data).decode("utf-8")
     
-    
+async def extract_text_from_image_vision_async(image_path: str, checklist: str) -> str:
+    base64_image = await encode_image_async(image_path)
+    response = await async_client.chat.completions.create(
+        model="gpt-4o-2024-11-20",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"Analyze this document and extract relevant information based on the following financials. Provide a summary of the extracted information:\n\n{checklist}",
+                    },
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},
+                    },
+                ],
+            }
+        ],
+        max_tokens=1000,
+    )
+    return response.choices[0].message.content
   
+  
+
+async def summarize_file_text_async(raw_text: str, page_type: str = None, is_followup: bool = False):
+    # Log the raw text before summarization
+    logging.info("Raw text before summarization:")
+    logging.info(raw_text)
+
+    # Define specific prompts based on page type
+    prompts = {
+        "COMPANY_INFO": """
+            Extract all company-related information including:
+            - Company name
+            - Registration details
+            - Address
+            - Contact information
+            - Business type
+            Present in a clear, structured format.
+        """,
+        "SHAREHOLDER": """
+            Extract all shareholder information including:
+            - Names
+            - Ownership percentages
+            - Types of shares
+            - Nationality/jurisdiction
+            - Any associated entities
+            List each shareholder separately with complete details.
+        """,
+        "DIRECTOR": """
+            Extract all director information including:
+            - Full names
+            - Positions
+            - Appointment dates
+            - Nationality
+            - Other directorships
+            List each director separately with complete details.
+        """,
+        "PEP": """
+            Extract all PEP-related information including:
+            - PEP status
+            - Political connections
+            - Risk assessments
+            - Associated parties
+            Note any potential red flags or concerns.
+        """,
+        "FINANCIAL": """
+            Extract key financial information including:
+            - Statement type
+            - Period covered
+            - Key metrics
+            - Notable items
+            Focus on accuracy of numerical data.
+        """,
+        "OTHER": """
+            Extract all relevant information that could be useful for KYC purposes:
+            - Any identifying information
+            - Relationships
+            - Key dates
+            - Important declarations
+            Note anything that could be relevant for compliance.
+        """
+    }
+
+    # Select appropriate prompt based on page type
+    system_message = prompts.get(page_type, prompts["OTHER"]) if page_type else dedent(
+        """
+        Extract all relevant information for KYC purposes, organizing it by type:
+        - Company information
+        - Individual details
+        - Relationships
+        - Financial information
+        - Compliance-related data
+        Present in a clear, structured format with appropriate sections.
+        """
+    )
+
+    response = await async_client.chat.completions.create(
+        model="gpt-4o-2024-11-20",
+        messages=[
+            {"role": "system", "content": system_message},
+            {"role": "user", "content": f"Here is the text:\n{raw_text}"},
+        ],
+    )
+    summary = response.choices[0].message.content
+
+    logging.info("Summarized output:")
+    logging.info(summary)
+
+    return summary
 
 
 def standardize_data(raw_data):

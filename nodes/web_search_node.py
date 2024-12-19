@@ -3,15 +3,27 @@ import ssl
 import certifi
 import logging
 import os
+import asyncio
+
+def sync_web_search_node(state):
+    """Synchronous wrapper for web_search_node"""
+    return asyncio.run(web_search_node(state))
 
 async def web_search_node(state):
     """Function to perform web search about a company using Perplexity API"""
-    company_name = state.get('company_name', '')
-    if not company_name:
-        return {"error": "Company name is required"}
+    print(state)
     
-    search_question = f"What are the main products, services, and recent news about {company_name}? Focus on business-relevant information."
+    search_question = f"""Find comprehensive financial and business information about {state}, including:
+    1. Executive summary and company overview
+    2. Key financial metrics (Income statement, balance sheet, cash flow highlights)
+    3. Management analysis and future outlook
+    4. ESG initiatives and corporate governance
+    5. Risk factors and regulatory compliance
+    6. Notable business segments and performance
+    7. Recent financial ratios, capital expenditure, and investments
     
+    Focus on the most recent annual report data and verified financial information."""
+
     
     url = "https://api.perplexity.ai/chat/completions"
 
@@ -43,8 +55,16 @@ async def web_search_node(state):
         citations = response_json["citations"]
 
         combined_response = f"{assistant_content} {' '.join(citations)}"
-
-        return {"response": combined_response}
+        state["final_doc"] = combined_response
+        state["word_count"] = len(combined_response.split())
+        state["llm_name"] = "perplexity-llama-3.1"
+        print("Internet web search results are ")
+        if "graph" in state:
+            state["graph"].add_node("web_search", 
+                                  data={"type": "web_search",
+                                       "content": combined_response})
+        
+        return state
     except aiohttp.ClientConnectorCertificateError as e:
         logging.error(f"SSL Certificate error: {e}")
         return {

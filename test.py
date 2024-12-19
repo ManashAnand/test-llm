@@ -66,7 +66,7 @@ Default Previous Report Structure:
         os.path.dirname(os.path.abspath(__file__)),
         'input.pdf'
     )
-    pdf_content = read_pdf(pdf_path)
+    # pdf_content = read_pdf(pdf_path)
     
     context_files = {
         'financial_metrics': 'context/financial_metrics.txt',
@@ -90,32 +90,81 @@ Default Previous Report Structure:
     {context_data['financial_metrics']}
     """
     
-    test_instruction = '''Write a 10-word comprehensive analysis of Company X's annual financial performance and market position, focusing on key financial metrics, strategic initiatives, and future outlook.
+    test_instruction = '''Write a comprehensive analysis of Company X's annual financial performance and market position, focusing on the following sections:
 
-Cover the following key areas:
-1. **Financial Overview:** Analyze key financial statements (Income Statement, Balance Sheet, Cash Flow Statement), including year-over-year comparisons, key ratios, and significant trends in revenue, profitability, and cash flow management.
+    1. Executive Summary
+    - Overview of key financial highlights
+    - Major developments during the period
+    - Summary of performance metrics
 
-2. **Market Performance:** Examine stock performance, market capitalization changes, dividend history, and comparison with industry benchmarks and major competitors.
+    2. Company Overview
+    - Business model and operations
+    - Market presence and positioning
+    - Key competitive advantages
 
-3. **Operational Analysis:** Evaluate operational efficiency metrics, segment-wise performance, geographical distribution of revenue, and key operational highlights of the fiscal year.
-
-4. **Risk Assessment:** Detail major business risks, regulatory challenges, market uncertainties, and the company's risk mitigation strategies, including cybersecurity and compliance measures.
-
-5. **Strategic Initiatives:** Review major strategic decisions, acquisitions, divestitures, R&D investments, and digital transformation efforts, analyzing their impact on business performance.
-
-6. **ESG Performance:** Assess Environmental, Social, and Governance initiatives, sustainability metrics, corporate responsibility programs, and their alignment with long-term business objectives.
-
-7. **Future Outlook:** Provide detailed analysis of growth strategies, market expansion plans, projected financial targets, and potential challenges or opportunities in the coming fiscal year.
-
-8. **Industry Context:** Analyze broader industry trends, competitive landscape, technological disruptions, and their potential impact on the company's business model.'''
-
+    3. Financial Performance Analysis
+    a. Income Statement
+        - Revenue analysis and growth trends
+        - Cost structure and margins
+        - Profitability metrics
     
+    b. Balance Sheet
+        - Asset composition and quality
+        - Liability structure
+        - Working capital management
+    
+    c. Cash Flow Statement
+        - Operating cash flows
+        - Investment activities
+        - Financing decisions
+
+    4. Key Financial Metrics
+    - Profitability ratios
+    - Liquidity ratios
+    - Solvency ratios
+    - Efficiency ratios
+
+    5. Segment-Wise Performance
+    - Business segment analysis
+    - Geographic segment analysis
+    - Product/service line performance
+
+    6. Risk Assessment
+    - Market risks
+    - Operational risks
+    - Financial risks
+    - Regulatory compliance
+
+    7. Corporate Governance
+    - Board composition and effectiveness
+    - Internal controls
+    - Compliance framework
+
+    8. Sustainability and ESG Initiatives
+    - Environmental impact
+    - Social responsibility
+    - Governance practices
+
+    9. Strategic Initiatives
+    - Capital expenditure
+    - Investments and acquisitions
+    - R&D initiatives
+    - Digital transformation
+
+    10. Future Outlook
+        - Growth strategies
+        - Market expansion plans
+        - Financial projections
+        - Industry trends
+
+    Please provide detailed analysis supported by specific data points and comparative metrics where applicable.'''
+
     inputs = {
         "initial_prompt": test_instruction,
         "context": combined_context,
         "num_steps": 10,
         "llm_name": "llama3.1-8b-groq",
-        "data": pdf_content or "No PDF content available"  
+        "data": "pdf_content" or "No PDF content available"  
     }
     
     print("\nUsing Context:")
