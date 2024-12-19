@@ -205,6 +205,7 @@ def perplexity_node(state):
     print(structured_data.get('market_position', ''))
     
     return {
+          **state, 
         "research_context": research_content,
         "plan": plan,
         "initial_prompt": initial_prompt,
@@ -213,5 +214,6 @@ def perplexity_node(state):
         "industry": structured_data.get('industry'),
         "competitors": structured_data.get('competitors', []),
         "shareholders": structured_data.get('shareholders', []),
-        "market_position": structured_data.get('market_position')
+        "market_position": structured_data.get('market_position'),
+           "num_steps": state.get('num_steps', 0) + 1
     }

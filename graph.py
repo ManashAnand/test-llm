@@ -7,6 +7,7 @@ from nodes.planning_node import planning_node
 from nodes.writing_node import writing_node
 from nodes.saving_node import saving_node
 from nodes.perplexity_node import perplexity_node
+from nodes.web_search_node import web_search_node
 
 
 class GraphState(TypedDict):
@@ -38,15 +39,17 @@ def create_workflow(llm):
     workflow.add_node("writing_node", writing_node)
     workflow.add_node("saving_node", saving_node)
     workflow.add_node("perplexity_node", perplexity_node)
+    workflow.add_node("web_search_node", web_search_node)
 
     # Set entry point
     workflow.set_entry_point("planning_node")
 
     # Add edges
-    # workflow.add_edge("planning_node", "perplexity_node")
+    # workflow.add_edge("planning_node", "web_search_node")
     workflow.add_edge("planning_node", "writing_node")
     workflow.add_edge("writing_node", "saving_node")
     workflow.add_edge("saving_node", "perplexity_node")
-    workflow.add_edge("perplexity_node", END)
+    workflow.add_edge("perplexity_node", "web_search_node")
+    workflow.add_edge("web_search_node", END)
 
     return workflow.compile()

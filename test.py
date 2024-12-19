@@ -34,10 +34,8 @@ def read_context_file(context_path, default_content):
 def main():
     load_dotenv()
     
-    # Create the workflow
     app = create_workflow(LLM)
     
-    # Default content for each context type
     default_contexts = {
         'financial_metrics': """
 Default Financial Metrics:
@@ -64,14 +62,12 @@ Default Previous Report Structure:
 """
     }
     
-    # 1. Read the PDF file (main data)
     pdf_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         'input.pdf'
     )
     pdf_content = read_pdf(pdf_path)
     
-    # 2. Read additional context files with fallbacks
     context_files = {
         'financial_metrics': 'context/financial_metrics.txt',
         'industry_benchmarks': 'context/industry_benchmarks.txt',
@@ -83,7 +79,6 @@ Default Previous Report Structure:
         full_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), filepath)
         context_data[key] = read_context_file(full_path, default_contexts[key])
     
-    # 3. Combine context
     combined_context = f"""
     Previous Financial Reports:
     {context_data['previous_reports']}
@@ -123,7 +118,6 @@ Cover the following key areas:
         "data": pdf_content or "No PDF content available"  
     }
     
-    # Print context being used (for debugging)
     print("\nUsing Context:")
     print("-" * 80)
     print(combined_context[:500] + "..." if len(combined_context) > 500 else combined_context)
